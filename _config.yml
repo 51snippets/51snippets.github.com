@@ -4,10 +4,10 @@
 
 url: http://51snippets.github.com
 title: 51snippets
-subtitle: A Blog For Coding Life.
+subtitle: a blog for coding life ...
 author: 51snippets
 simple_search: http://google.com/search
-description:
+description: personal blog
 
 # Default date format is "ordinal" (resulting in "July 22nd 2007")
 # You can customize the format as defined in
@@ -19,7 +19,7 @@ date_format: "ordinal"
 subscribe_rss: /atom.xml
 subscribe_email:
 # RSS feeds can list your email address if you like
-email:
+email: 51snippets@gmail.com
 
 # ----------------------- #
 #    Jekyll & Plugins     #
