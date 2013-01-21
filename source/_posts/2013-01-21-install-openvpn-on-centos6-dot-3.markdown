@@ -269,12 +269,14 @@ verb 3
 ```
 
 ##心得
-客户端和服务器端配置需保持一致
-服务器端口可以修改
-可以改成tcp方式，貌似在某些网络环境下比较稳定
+>客户端和服务器端配置需保持一致
+>服务器端口可以修改
+>可以改成tcp方式，貌似在某些网络环境下比较稳定
 
 
 ##参考链接
 [install-openvpn-on-centos](https://safesrv.net/install-openvpn-on-centos/)
+
 [how-to-install-vpn-server-with-openvpn-on-centos-6](http://vjetnamnet.com/how-to-install-vpn-server-with-openvpn-on-centos-6/)
+
 [CentOS安装OpenVPN](http://www.live-in.org/archives/1112.html)

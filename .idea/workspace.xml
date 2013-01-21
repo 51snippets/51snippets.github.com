@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="d8dfcf84-b8df-4d12-a7f8-22ad915cc94b" name="Default" comment="" />
+    <list default="true" id="d8dfcf84-b8df-4d12-a7f8-22ad915cc94b" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/_posts/2013-01-21-install-openvpn-on-centos6-dot-3.markdown" afterPath="$PROJECT_DIR$/source/_posts/2013-01-21-install-openvpn-on-centos6-dot-3.markdown" />
+    </list>
     <ignored path="51snippets.github.com.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -23,7 +25,7 @@
       <file leaf-file-name="2013-01-21-install-openvpn-on-centos6-dot-3.markdown" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/source/_posts/2013-01-21-install-openvpn-on-centos6-dot-3.markdown">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="274" column="0" selection-start="3932" selection-end="3932" vertical-scroll-proportion="1.0">
+            <state line="273" column="1" selection-start="3910" selection-end="3910" vertical-scroll-proportion="0.6641791">
               <folding />
             </state>
           </provider>
@@ -303,7 +305,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/source/_posts/2013-01-21-install-openvpn-on-centos6-dot-3.markdown">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="274" column="0" selection-start="3932" selection-end="3932" vertical-scroll-proportion="1.0">
+        <state line="273" column="1" selection-start="3910" selection-end="3910" vertical-scroll-proportion="0.6641791">
           <folding />
         </state>
       </provider>
