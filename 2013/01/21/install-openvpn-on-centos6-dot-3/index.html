@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>install openvpn on centos6.3 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="centos6.3 安装openvpn
+准备工作
+OpenVPN需要TUN设备支持，还需要iptables的nat模块支持。如果在OpenVZ虚拟化的VPS上，需要管理员在主机上打开TUN/TAP设备。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="install openvpn on centos6.3">
+<meta property="og:url" content="http://yoursite.com/2013/01/21/install-openvpn-on-centos6-dot-3/">
+<meta property="og:image">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="centos6.3 安装openvpn
+准备工作
+OpenVPN需要TUN设备支持，还需要iptables的nat模块支持。如果在OpenVZ虚拟化的VPS上，需要管理员在主机上打开TUN/TAP设备。">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="install openvpn on centos6.3">
+<meta name="twitter:description" content="centos6.3 安装openvpn
+准备工作
+OpenVPN需要TUN设备支持，还需要iptables的nat模块支持。如果在OpenVZ虚拟化的VPS上，需要管理员在主机上打开TUN/TAP设备。">
+  
+    <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="http://fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><input type="submit" value="&#xF002;" class="search-form-submit"><input type="hidden" name="q" value="site:http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-install-openvpn-on-centos6-dot-3" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2013/01/21/install-openvpn-on-centos6-dot-3/" class="article-date">
+  <time datetime="2013-01-21T02:32:00.000Z" itemprop="datePublished">Jan 21 2013</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      install openvpn on centos6.3
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="centos6-3_安装openvpn">centos6.3 安装openvpn</h1>
+<h2 id="准备工作">准备工作</h2>
+<p>OpenVPN需要TUN设备支持，还需要iptables的nat模块支持。<br>如果在OpenVZ虚拟化的VPS上，需要管理员在主机上打开TUN/TAP设备。<br><a id="more"></a></p>
+<h4 id="1、查看tun/tap是否激活">1、查看tun/tap是否激活</h4>
+<h6 id="主机检查TUN">主机检查TUN</h6>
+<figure class="highlight"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre>modinfo tun
+</pre></td></tr></table></figure><br>不报错则表示支持<br><br>######OpenVZ虚拟化的VPS上检查TUN/TAP<br><figure class="highlight"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre>cat /dev/<span class="winutils">net</span>/tun
+</pre></td></tr></table></figure>
+
+<p>如果结果为active，输出为：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre>cat: <span class="regexp">/dev/</span>net/tun: File descriptor <span class="keyword">in</span> bad state
+</pre></td></tr></table></figure>
+
+
+<h4 id="2、添加RPM源">2、添加RPM源</h4>
+<p>32bit Package:</p>
+<p>CentOS 5:</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre>wget http://packages<span class="preprocessor">.sw</span><span class="preprocessor">.be</span>/rpmforge-release/rpmforge-release-<span class="number">0.5</span><span class="number">.2</span>-<span class="number">2.</span>el5<span class="preprocessor">.rf</span><span class="preprocessor">.i</span>386<span class="preprocessor">.rpm</span>
+</pre></td></tr></table></figure>
+
+<p>CentOS 6:</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre>wget http://pkgs<span class="preprocessor">.repoforge</span><span class="preprocessor">.org</span>/rpmforge-release/rpmforge-release-<span class="number">0.5</span><span class="number">.2</span>-<span class="number">1.</span>el6<span class="preprocessor">.rf</span><span class="preprocessor">.i</span>686<span class="preprocessor">.rpm</span>
+</pre></td></tr></table></figure>
+
+<p>64bit Package:</p>
+<p>CentOS 5:</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre>wget http://packages<span class="preprocessor">.sw</span><span class="preprocessor">.be</span>/rpmforge-release/rpmforge-release-<span class="number">0.5</span><span class="number">.2</span>-<span class="number">2.</span>el5<span class="preprocessor">.rf</span><span class="preprocessor">.x</span>86_64<span class="preprocessor">.rpm</span>
+</pre></td></tr></table></figure>
+
+<p>CentOS 6:</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre>wget http://pkgs<span class="preprocessor">.repoforge</span><span class="preprocessor">.org</span>/rpmforge-release/rpmforge-release-<span class="number">0.5</span><span class="number">.2</span>-<span class="number">2.</span>el6<span class="preprocessor">.rf</span><span class="preprocessor">.x</span>86_64<span class="preprocessor">.rpm</span>
+</pre></td></tr></table></figure>
+
+<p>下载安装LZO，LZO是一种压缩算法</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre>wget http://openvpn<span class="preprocessor">.net</span>/release/lzo-<span class="number">1.08</span>-<span class="number">4.</span>rf<span class="preprocessor">.src</span><span class="preprocessor">.rpm</span>
+</pre></td></tr></table></figure>
+
+<p>安装rpm（需要编译环境的支持）</p>
+<p>additional rpms</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+</pre></td><td class="code"><pre>yum install gcc make rpm<span class="attribute">-build</span> autoconf<span class="built_in">.</span>noarch zlib<span class="attribute">-devel</span> pam<span class="attribute">-devel</span> openssl<span class="attribute">-devel</span> <span class="attribute">-y</span>
+rpmbuild <span class="subst">--</span>rebuild lzo<span class="subst">-</span><span class="number">1.08</span><span class="subst">-</span><span class="number">4.</span>rf<span class="built_in">.</span>src<span class="built_in">.</span>rpm
+rpm <span class="attribute">-Uvh</span> lzo<span class="subst">-*</span><span class="built_in">.</span>rpm
+rpm <span class="attribute">-Uvh</span> rpmforge<span class="attribute">-release</span><span class="subst">*</span>
+</pre></td></tr></table></figure>
+
+<p>LZO另外一种安装方法</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+</pre></td><td class="code"><pre>wget http://www<span class="preprocessor">.oberhumer</span><span class="preprocessor">.com</span>/opensource/lzo/download/lzo-<span class="number">2.06</span><span class="preprocessor">.tar</span><span class="preprocessor">.gz</span>
+tar -zxvf lzo-<span class="number">2.06</span><span class="preprocessor">.tar</span><span class="preprocessor">.gz</span>
+cd lzo-<span class="number">2.06</span>
+./configure
+make
+make install
+</pre></td></tr></table></figure>
+
+
+<h4 id="3、安装openvpn">3、安装openvpn</h4>
+<figure class="highlight"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre>yum <span class="keyword">install</span> openvpn -y
+</pre></td></tr></table></figure>
+
+<h2 id="配置">配置</h2>
+<h4 id="1、将easy-rsa_sample目录拷到11">1、将easy-rsa sample目录拷到<figure class="highlight /etc/openvpn```"><table><tr><td class="gutter"><pre>1
+2
+</pre></td><td class="code"><pre>
+
+</pre></td></tr></table></figure></h4>
+<p>cp -R /usr/share/doc/openvpn-2.2.2/easy-rsa/ /etc/openvpn/</p>
+<p><figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+</pre></td><td class="code"><pre>
+修改
+</pre></td></tr></table></figure>/etc/openvpn/easy-rsa/2.0/vars<figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+</pre></td><td class="code"><pre>
+
+</pre></td></tr></table></figure><br>export KEY_CONFIG=/etc/openvpn/easy-rsa/2.0/openssl-1.0.0.cnf</p>
+<p><figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+</pre></td><td class="code"><pre>
+<span class="preprocessor">####2、创建证书、公钥私钥</span>
+</pre></td></tr></table></figure><br>cd /etc/openvpn/easy-rsa/2.0<br>chmod 755 *<br>source ./vars<br>./vars<br>./clean-all</p>
+<p><figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+</pre></td><td class="code"><pre>
+创建CA
+</pre></td></tr></table></figure><br>./build-ca //一路默认选项</p>
+<p><figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+</pre></td><td class="code"><pre>
+创建Server <span class="keyword">key</span>
+</pre></td></tr></table></figure><br>./build-key-server server //server name</p>
+<p><figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+</pre></td><td class="code"><pre>
+创建Client <span class="keyword">key</span>
+</pre></td></tr></table></figure><br>./build-key client1 //client name</p>
+<p><figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+</pre></td><td class="code"><pre>
+创建diffie<span class="attribute">-hellman</span>文件
+</pre></td></tr></table></figure><br>./build-dh</p>
+<p><figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+</pre></td><td class="code"><pre>
+创建tls-auth 的<span class="keyword">key</span>
+</pre></td></tr></table></figure><br>openvpn —genkey —secret ta.key<br>mv ta.key keys/</p>
+<p><figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+3
+</pre></td><td class="code"><pre>
+<span class="preprocessor">####3、配置server.conf</span>
+拷贝配置示例
+</pre></td></tr></table></figure><br>cp /usr/share/doc/openvpn-2.2.2/sample-config-files/server.conf /etc/openvpn</p>
+<p><figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+</pre></td><td class="code"><pre>
+
+</pre></td></tr></table></figure><br>dev tun<br>proto tcp<br>port 1194<br>ca ca.crt<br>cert /etc/openvpn/easy-rsa/2.0/keys/server.crt<br>key /etc/openvpn/easy-rsa/2.0/keys/server.key<br>dh /etc/openvpn/easy-rsa/2.0/keys/dh1024.pem<br>tls-auth /etc/openvpn/easy-rsa/2.0/keys/ta.key 0</p>
+<h1 id="user_nobody">user nobody</h1>
+<h1 id="group_nogroup">group nogroup</h1>
+<p>server 10.8.0.0 255.255.255.0<br>persist-key<br>persist-tun<br>status openvpn-status.log<br>verb 3</p>
+<h1 id="client-to-client">client-to-client</h1>
+<p>keepalive 5 30<br>push “redirect-gateway def1”<br>push “dhcp-option DNS 8.8.8.8”<br>push “dhcp-option DNS 8.8.4.4”<br>comp-lzo</p>
+<p><figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+</pre></td><td class="code"><pre>
+<span class="preprocessor">####4、其它设置</span>
+
+<span class="preprocessor">######设置IP包转发</span>
+修改/etc/sysctl.conf
+</pre></td></tr></table></figure><br>net.ipv4.ip_forward = 1</p>
+<p><figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+</pre></td><td class="code"><pre>
+重启
+</pre></td></tr></table></figure><br>sysctl -p</p>
+<p><figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+</pre></td><td class="code"><pre>
+<span class="comment">######Iptables 设置</span>
+
+xen <span class="keyword">and</span> <span class="constant">KVM</span> based <span class="constant">VPS</span>’s
+</pre></td></tr></table></figure><br>iptables -t nat -A POSTROUTING -s 10.8.0.0/24 -o eth0 -j MASQUERADE</p>
+<p><figure class="highlight"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre>OpenVZ based VPS’s
+</pre></td></tr></table></figure><br>iptables -t nat -A POSTROUTING -o venet0 -j SNAT —to-source 主机IP地址</p>
+<p><figure class="highlight"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre><span class="keyword">or</span>
+</pre></td></tr></table></figure><br>iptables -t nat -A POSTROUTING -s 10.8.0.0/24 -j SNAT —to-source 主机IP地址</p>
+<p><figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+</pre></td><td class="code"><pre>
+CSF防火墙设置
+</pre></td></tr></table></figure><br>iptables -A FORWARD -m state —state RELATED,ESTABLISHED -j ACCEPT<br>iptables -A FORWARD -s 10.8.0.0/24 -j ACCEPT<br>iptables -A FORWARD -j REJECT<br>iptables -t nat -A POSTROUTING -s 10.8.0.0/24 -o eth0 -j MASQUERADE<br>iptables -t nat -A POSTROUTING -j SNAT —to-source 主机IP地址</p>
+<p><figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+</pre></td><td class="code"><pre>
+保存设置
+</pre></td></tr></table></figure><br>service iptables save</p>
+<p><figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+</pre></td><td class="code"><pre>
+如果iptables save报错
+</pre></td></tr></table></figure><br>iptables: Saving firewall rules to /etc/sysconfig/iptables: /etc/init.d/iptables: line 268: restorecon: command not found</p>
+<p><figure class="highlight"><table><tr><td class="gutter"><pre>1
+</pre></td><td class="code"><pre>要安装一个软件包：
+</pre></td></tr></table></figure><br>yum install policycoreutils</p>
+<p><figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+</pre></td><td class="code"><pre>
+<span class="preprocessor">##启动openvpn</span>
+</pre></td></tr></table></figure><br>service openvpn start<br>chkconfig openvpn on</p>
+<p><figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+</pre></td><td class="code"><pre>
+<span class="preprocessor">##客户端配置</span>
+
+从服务器中下载所需文件至客户端config目录
+</pre></td></tr></table></figure><br>ca.crt<br>client1.crt<br>client1.key<br>ta.key</p>
+<p><figure class="highlight"><table><tr><td class="gutter"><pre>1
+2
+</pre></td><td class="code"><pre>
+创建客户端配置文件<span class="code">`client.vpn`</span>
+</pre></td></tr></table></figure><br>client<br>dev tun<br>proto udp<br>remote VPN主机IP地址<br>resolv-retry infinite<br>nobind<br>persist-key<br>persist-tun<br>ca ca.crt<br>cert client1.crt<br>key client1.key<br>tls-auth ta.key 1<br>comp-lzo<br>verb 3<br>```</p>
+<h2 id="心得">心得</h2>
+<blockquote>
+<p>客户端和服务器端配置需保持一致</p>
+<p>服务器端口可以修改</p>
+<p>可以改成tcp方式，貌似在某些网络环境下比较稳定</p>
+</blockquote>
+<h2 id="参考链接">参考链接</h2>
+<p><a href="https://safesrv.net/install-openvpn-on-centos/" target="_blank">install-openvpn-on-centos</a></p>
+<p><a href="http://vjetnamnet.com/how-to-install-vpn-server-with-openvpn-on-centos-6/" target="_blank">how-to-install-vpn-server-with-openvpn-on-centos-6</a></p>
+<p><a href="http://www.live-in.org/archives/1112.html" target="_blank">CentOS安装OpenVPN</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2013/01/21/install-openvpn-on-centos6-dot-3/" data-id="y6nodn5f5y1c88z8" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2014/05/29/hello-world/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Hello World
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2013/01/20/setup-Octopress/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">完成Octopress环境的搭建</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  
+    
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/05">May 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/01">January 2013</a><span class="archive-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2014/05/29/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2013/01/21/install-openvpn-on-centos6-dot-3/">install openvpn on centos6.3</a>
+          </li>
+        
+          <li>
+            <a href="/2013/01/20/setup-Octopress/">完成Octopress环境的搭建</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2014 John Doe<br>
+      Powered by <a href="http://zespia.tw/hexo/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script type="text/javascript" src="/js/script.js"></script>
+  </div>
+</body>
+</html>
